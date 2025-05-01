@@ -5,12 +5,24 @@ jobs:
       - image: ubuntu:24.04
     steps:
       - checkout
-      - run: apt install curl
-      - run: curl -fsSL https://raw.githubusercontent.com/koyeb/koyeb-cli/master/install.sh | sh
-      - run: export PATH=$HOME/.koyeb/bin:$PATH
-      - run: export KOYEB_TOKEN=${KOYEB_API_TOKEN}
-      - run: koyeb app create glowberry-tax-structure-simulator-glabcicd-docker-compose-koyeb
-      - run: koyeb service create glowberry-tax-structure-simulator-glabcicd-docker-compose-koyeb --app glowberry-tax-structure-simulator-glabcicd-docker-compose-koyeb --git github.com/EphraimX/glowberry-global-tax-structure-simulator-gha-docker-compose-koyeb --instance-type free --git-builder docker --git-docker-dockerfile Dockerfile.koyeb --port 3000:http --route /:3000 --privileged
+      - run:
+          name: Install Curl and Koyeb CLI
+          command: |
+            apt-get update
+            apt-get install -y curl
+            curl -fsSL https://raw.githubusercontent.com/koyeb/koyeb-cli/master/install.sh | sh
+            export PATH=$HOME/.koyeb/bin:$PATH
+            export KOYEB_TOKEN=${KOYEB_API_TOKEN}
+            koyeb app create glowberry-tax-structure-simulator-glabcicd-docker-compose-koyeb || echo "App already exists"
+            koyeb service create glowberry-tax-structure-simulator-glabcicd-docker-compose-koyeb \
+              --app glowberry-tax-structure-simulator-glabcicd-docker-compose-koyeb \
+              --git github.com/EphraimX/glowberry-global-tax-structure-simulator-gha-docker-compose-koyeb \
+              --instance-type free \
+              --git-builder docker \
+              --git-docker-dockerfile Dockerfile.koyeb \
+              --port 3000:http \
+              --route /:3000 \
+              --privileged
           
 workflows:
   build-and-deploy-to-koyeb:
