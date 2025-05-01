@@ -5,13 +5,17 @@ jobs:
       - image: ubuntu:24.04
     steps:
       - checkout
-      - run: apt install curl
+      - run:
+          name: Update Package List
+          command: apt-get update
+      - run:
+          name: Install Curl
+          command: apt-get install -y curl
       - run: curl -fsSL https://raw.githubusercontent.com/koyeb/koyeb-cli/master/install.sh | sh
       - run: export PATH=$HOME/.koyeb/bin:$PATH
       - run: export KOYEB_TOKEN=${KOYEB_API_TOKEN}
       - run: koyeb app create glowberry-tax-structure-simulator-glabcicd-docker-compose-koyeb
       - run: koyeb service create glowberry-tax-structure-simulator-glabcicd-docker-compose-koyeb --app glowberry-tax-structure-simulator-glabcicd-docker-compose-koyeb --git github.com/EphraimX/glowberry-global-tax-structure-simulator-gha-docker-compose-koyeb --instance-type free --git-builder docker --git-docker-dockerfile Dockerfile.koyeb --port 3000:http --route /:3000 --privileged
-          
 workflows:
   build-and-deploy-to-koyeb:
     jobs:
