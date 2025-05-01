@@ -1,9 +1,8 @@
 version: 2.1
 jobs:
-  
   deploy:
     docker:
-      - image: ubuntu-2404:2024.11.1
+      - image: cimg/ubuntu:24.04
     steps:
       - checkout
       - run: apt install curl
